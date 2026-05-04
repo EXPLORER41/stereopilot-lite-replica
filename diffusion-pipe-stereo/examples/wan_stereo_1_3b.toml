@@ -1,0 +1,64 @@
+# StereoPilot-lite prototype training on Wan2.1-T2V-1.3B.
+# Right-eye videos are the training targets. Left-eye videos are read from
+# control_path in examples/wan_stereo_dataset.toml.
+
+output_dir = '/data/diffusion_pipe_training_runs/wan_stereo_1_3b'
+dataset = 'examples/wan_stereo_dataset.toml'
+
+epochs = 1000
+micro_batch_size_per_gpu = 1
+pipeline_stages = 1
+gradient_accumulation_steps = 1
+gradient_clipping = 1
+warmup_steps = 10
+
+eval_every_n_epochs = 1
+eval_before_first_step = true
+eval_micro_batch_size_per_gpu = 1
+eval_gradient_accumulation_steps = 1
+
+save_every_n_epochs = 5
+checkpoint_every_n_minutes = 120
+activation_checkpointing = 'unsloth'
+partition_method = 'parameters'
+save_dtype = 'bfloat16'
+caching_batch_size = 1
+steps_per_print = 1
+video_clip_mode = 'single_beginning'
+
+# This is meant for the real training box, not an 8GB local development GPU.
+# On a 32GB RTX 5090, keep block swapping on for the first run; lower it if you
+# have spare VRAM and want faster training.
+blocks_to_swap = 18
+
+[model]
+type = 'wan_stereo'
+ckpt_path = '/data/models/Wan2.1-T2V-1.3B'
+dtype = 'bfloat16'
+transformer_dtype = 'float8'
+
+# Matches StereoPilot inference, which feeds a small fixed timestep during the
+# single forward pass instead of running a diffusion sampling trajectory.
+stereo_timestep = 1.0
+
+# Used only when a dataset directory does not set domain_label.
+# 0 = parallel / Stereo4D style, 1 = converged / 3DMovie style.
+domain_label = 'converged'
+
+[adapter]
+type = 'lora'
+rank = 32
+dtype = 'bfloat16'
+
+[optimizer]
+type = 'AdamW8bitKahan'
+lr = 2e-5
+betas = [0.9, 0.99]
+weight_decay = 0.01
+stabilize = false
+
+[monitoring]
+enable_wandb = false
+wandb_api_key = ''
+wandb_tracker_name = ''
+wandb_run_name = ''

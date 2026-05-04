@@ -1,0 +1,27 @@
+# StereoPilot-lite paired-video dataset.
+#
+# Each target right-eye video in directory.path must have:
+#   1. a left-eye video with the exact same filename in directory.control_path
+#   2. a caption .txt file with the same basename in directory.path
+#
+# Example:
+#   /data/stereo/right/clip_000001.mp4
+#   /data/stereo/right/clip_000001.txt
+#   /data/stereo/left/clip_000001.mp4
+
+# Start small on 32GB VRAM. Once a tiny run overfits cleanly, try
+# [[640, 368, 81]], then [[832, 480, 81]].
+size_buckets = [[512, 288, 81]]
+num_repeats = 1
+
+[[directory]]
+# Target videos: right eye.
+path = '/data/stereo/right'
+
+# Conditioning videos: matching left eye.
+control_path = '/data/stereo/left'
+
+# 0 / "parallel" for Stereo4D-style parallel stereo.
+# 1 / "converged" for 3D-movie-style converged stereo.
+domain_label = 'converged'
+num_repeats = 1

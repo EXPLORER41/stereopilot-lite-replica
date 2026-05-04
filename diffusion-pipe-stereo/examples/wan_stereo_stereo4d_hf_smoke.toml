@@ -1,0 +1,51 @@
+output_dir = '/path/to/runs/wan_stereo_1_3b_stereo4d_hf_smoke'
+dataset = 'examples/wan_stereo_dataset.stereo4d_hf_smoke.toml'
+
+epochs = 1
+micro_batch_size_per_gpu = 1
+pipeline_stages = 1
+gradient_accumulation_steps = 1
+gradient_clipping = 1
+warmup_steps = 0
+
+eval_every_n_epochs = 1
+eval_before_first_step = false
+eval_micro_batch_size_per_gpu = 1
+eval_gradient_accumulation_steps = 1
+
+save_every_n_epochs = 1
+checkpoint_every_n_minutes = 120
+activation_checkpointing = 'unsloth'
+partition_method = 'parameters'
+save_dtype = 'bfloat16'
+caching_batch_size = 1
+steps_per_print = 1
+video_clip_mode = 'single_beginning'
+blocks_to_swap = 18
+
+[model]
+type = 'wan_stereo'
+ckpt_path = '/path/to/weights/Wan2.1-T2V-1.3B'
+dtype = 'bfloat16'
+transformer_dtype = 'float8'
+stereo_timestep = 1.0
+domain_label = 'parallel'
+
+[adapter]
+type = 'lora'
+rank = 32
+dropout = 0.0
+dtype = 'bfloat16'
+
+[optimizer]
+type = 'AdamW8bitKahan'
+lr = 2e-5
+betas = [0.9, 0.99]
+weight_decay = 0.01
+stabilize = false
+
+[monitoring]
+enable_wandb = false
+wandb_api_key = ''
+wandb_tracker_name = ''
+wandb_run_name = ''

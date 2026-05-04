@@ -1,0 +1,73 @@
+# Python / editor
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.DS_Store
+.vscode/
+.idea/
+
+# Environments
+.venv/
+venv/
+env/
+.env
+.env.*
+*.env
+
+# Git internals from copied source repos
+**/.git/
+**/.git
+
+# Model weights and training artifacts
+ckpt/
+**/ckpt/
+data/
+datasets/
+runs/
+stereopilot_exports/
+output/
+stereo_output/
+cache/
+.cache/
+logs/
+wandb/
+tensorboard/
+checkpoint*/
+global_step*/
+epoch*/
+
+# Large model/data formats
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.onnx
+*.engine
+*.npz
+*.npy
+*.tar
+*.zip
+*.7z
+*.rar
+*.gz
+*.xz
+
+# Generated media
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.webm
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Local generated reports/logs
+*.log
+*_qa.json
+manifest.jsonl
+skipped.jsonl
