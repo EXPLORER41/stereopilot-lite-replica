@@ -20,23 +20,61 @@ env/
 **/.git/
 **/.git
 
-# Model weights and training artifacts
-ckpt/
-**/ckpt/
-data/
-datasets/
-runs/
-stereopilot_exports/
-output/
-stereo_output/
-cache/
-.cache/
-logs/
-wandb/
-tensorboard/
-checkpoint*/
-global_step*/
-epoch*/
+# Runtime/cache directories: keep only public skeleton docs.
+cache/**
+.cache/**
+logs/**
+wandb/**
+tensorboard/**
+checkpoint*/**
+**/checkpoint*/**
+global_step*/**
+epoch*/**
+
+# External checkpoint locations: track README placeholders only.
+ckpt/**
+**/ckpt/**
+!StereoPilot/ckpt/
+!StereoPilot/ckpt/**/
+!StereoPilot/ckpt/**/README.md
+!StereoPilot/ckpt/**/.gitkeep
+
+# Workspace artifact directories: track README placeholders only.
+data/**
+datasets/**
+runs/**
+stereopilot_exports/**
+models/**
+!data/
+!datasets/
+!runs/
+!stereopilot_exports/
+!models/
+!data/**/
+!datasets/**/
+!runs/**/
+!stereopilot_exports/**/
+!models/**/
+!data/**/README.md
+!datasets/**/README.md
+!runs/**/README.md
+!stereopilot_exports/**/README.md
+!models/**/README.md
+!data/**/.gitkeep
+!datasets/**/.gitkeep
+!runs/**/.gitkeep
+!stereopilot_exports/**/.gitkeep
+!models/**/.gitkeep
+
+# Generated inference outputs: keep placeholders only.
+output/**
+stereo_output/**
+**/output/**
+**/stereo_output/**
+!StereoPilot/output/
+!StereoPilot/stereo_output/
+!StereoPilot/output/README.md
+!StereoPilot/stereo_output/README.md
 
 # Large model/data formats
 *.safetensors
@@ -55,7 +93,7 @@ epoch*/
 *.gz
 *.xz
 
-# Generated media
+# Generated or licensed media/data. Small upstream assets are re-included below.
 *.mp4
 *.mov
 *.mkv
@@ -66,8 +104,21 @@ epoch*/
 *.jpeg
 *.gif
 
+# Public-safe small upstream assets used by the inference snapshot.
+!StereoPilot/asset/
+!StereoPilot/asset/*.png
+!StereoPilot/asset/*.jpg
+!StereoPilot/asset/*.jpeg
+!StereoPilot/asset/README.md
+!StereoPilot/sample/*.mp4
+!StereoPilot/sample/README.md
+
 # Local generated reports/logs
 *.log
 *_qa.json
 manifest.jsonl
 skipped.jsonl
+
+# Do not track unrelated upstream submodule checkpoint placeholders.
+diffusion-pipe-stereo/submodules/*/checkpoints/**
+diffusion-pipe-stereo/submodules/**/checkpoints/**

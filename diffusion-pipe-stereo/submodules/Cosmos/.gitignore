@@ -241,3 +241,6 @@ manifest.json
 wandb/
 onelogger.err
 onelogger.log
+
+# Monorepo public snapshot: keep runtime checkpoint placeholders out.
+checkpoints/README.md

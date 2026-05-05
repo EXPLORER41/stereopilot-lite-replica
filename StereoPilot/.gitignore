@@ -170,3 +170,19 @@ cython_debug/
 # ckpt
 ckpt/Wan2.1-T2V-1.3B/
 ckpt/StereoPilot.safetensors
+# Public skeleton placeholders for this monorepo snapshot.
+!ckpt/
+!ckpt/README.md
+!ckpt/Wan2.1-T2V-1.3B/
+!ckpt/Wan2.1-T2V-1.3B/README.md
+!output/
+!output/README.md
+!stereo_output/
+!stereo_output/README.md
+!asset/
+!asset/*.png
+!asset/*.jpg
+!asset/*.jpeg
+!asset/README.md
+!sample/*.mp4
+!sample/README.md
