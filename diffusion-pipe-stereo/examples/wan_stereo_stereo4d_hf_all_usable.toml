@@ -1,4 +1,4 @@
-output_dir = '/path/to/runs/wan_stereo_1_3b_stereo4d_hf_all_usable'
+output_dir = '/path/to/workspace/runs/wan_stereo_1_3b_stereo4d_hf_all_usable'
 dataset = 'examples/wan_stereo_dataset.stereo4d_hf_all_usable.toml'
 
 epochs = 1
@@ -25,7 +25,7 @@ blocks_to_swap = 18
 
 [model]
 type = 'wan_stereo'
-ckpt_path = '/path/to/weights/Wan2.1-T2V-1.3B'
+ckpt_path = '/path/to/workspace/StereoPilot/ckpt/Wan2.1-T2V-1.3B'
 dtype = 'bfloat16'
 transformer_dtype = 'float8'
 stereo_timestep = 1.0

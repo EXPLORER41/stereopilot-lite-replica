@@ -1,5 +1,5 @@
-output_dir = '/path/to/workspace/runs/wan_stereo_1_3b'
-dataset = 'examples/wan_stereo_dataset.smoke.toml'
+output_dir = '/path/to/workspace/runs/wan_stereo_fullft_smoke'
+dataset = 'examples/wan_stereo_dataset.fullft_smoke.toml'
 
 epochs = 1
 micro_batch_size_per_gpu = 1
@@ -21,25 +21,19 @@ save_dtype = 'bfloat16'
 caching_batch_size = 1
 steps_per_print = 1
 video_clip_mode = 'single_beginning'
-blocks_to_swap = 18
+blocks_to_swap = 0
 
 [model]
 type = 'wan_stereo'
 ckpt_path = '/path/to/workspace/StereoPilot/ckpt/Wan2.1-T2V-1.3B'
 dtype = 'bfloat16'
-transformer_dtype = 'float8'
+transformer_dtype = 'bfloat16'
 stereo_timestep = 1.0
-domain_label = 'converged'
-
-[adapter]
-type = 'lora'
-rank = 32
-dropout = 0.0
-dtype = 'bfloat16'
+domain_label = 'parallel'
 
 [optimizer]
 type = 'AdamW8bitKahan'
-lr = 2e-5
+lr = 1e-5
 betas = [0.9, 0.99]
 weight_decay = 0.01
 stabilize = false

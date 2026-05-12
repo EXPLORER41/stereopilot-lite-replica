@@ -2,6 +2,10 @@
 
 Research prototype, not official StereoPilot training code.
 
+## FullFT Branch Note
+
+This `FullFT` branch carries the full-parameter training variant of the `wan_stereo` replica. The `main` branch remains the public-safe LoRA-oriented snapshot; this branch updates `diffusion-pipe-stereo/` with full-parameter configs, exporter support, AdamW examples, and the bidirectional/cycle reconstruction loss implementation used in the later experiments.
+
 This repository is a public-safe workspace skeleton for an engineering reproduction of a StereoPilot-style stereo-video training and inference workflow. It keeps the remote project structure visible while excluding large or licensed artifacts.
 
 It combines:
@@ -10,7 +14,7 @@ It combines:
 - `diffusion-pipe-stereo/`: diffusion-pipe-based `wan_stereo` training replica.
 - workspace artifact directories such as `data/`, `datasets/`, `runs/`, `models/`, and `stereopilot_exports/`, represented by README placeholders.
 
-The goal is to prove an end-to-end path from paired left/right stereo clips to a LoRA adapter, then to a merged `StereoPilot.safetensors`-style checkpoint that can be loaded by the StereoPilot inference code.
+The goal is to prove an end-to-end path from paired left/right stereo clips to either a LoRA adapter or a full-parameter `StereoPilot.safetensors`-style checkpoint that can be loaded by the StereoPilot inference code. On this branch, the primary training path is full-parameter fine-tuning.
 
 ## What Is Not Included
 
@@ -45,7 +49,10 @@ stereopilot-lite-replica/
     tools/prepare_stereo4d_hf_smoke.py
     tools/wan_stereo_dataset_qa.py
     tools/export_wan_stereo_lora.py
+    tools/export_wan_stereo_full_model.py
+    docs/wan_stereo_fullft.md
     examples/wan_stereo_*.toml
+    examples/wan_stereo_fullft_*.toml
   models/                            # Optional model symlink/pointer placeholder
   data/                              # Prepared training data skeleton
   datasets/                          # Raw download/extraction skeleton
@@ -183,6 +190,36 @@ python tools/wan_stereo_dataset_qa.py \
 ```
 
 The expected smoke result is matched pairs with zero errors. Warnings should be investigated before full training.
+
+## Train Full-Parameter Wan Stereo
+
+This branch includes full-parameter configs in `diffusion-pipe-stereo/examples/wan_stereo_fullft_*.toml`. They intentionally omit the `[adapter]` block so diffusion-pipe saves full `model.safetensors` checkpoints instead of PEFT LoRA adapters.
+
+Important defaults used by the FullFT experiments:
+
+- `micro_batch_size_per_gpu = 1`
+- `gradient_accumulation_steps = 1`
+- `transformer_dtype = 'bfloat16'`
+- `blocks_to_swap = 0`
+- `AdamW8bitKahan / lr=1e-5` for early feasibility runs
+- `AdamW / lr=3e-4`, then lower cycle continuation rates for later optimizer/loss experiments
+- optional `stereo_loss_mode = 'bidirectional_recon'` or `stereo_loss_mode = 'cycle_recon'` with `cycle_loss_weight = 0.5`
+
+Example cache + train commands mirror the LoRA flow, but use a FullFT config:
+
+```bash
+NCCL_P2P_DISABLE=1 NCCL_IB_DISABLE=1 deepspeed --num_gpus=1 train.py --deepspeed --config examples/wan_stereo_fullft_all_usable.toml --cache_only --regenerate_cache
+
+NCCL_P2P_DISABLE=1 NCCL_IB_DISABLE=1 deepspeed --num_gpus=1 train.py --deepspeed --config examples/wan_stereo_fullft_all_usable.toml --trust_cache
+```
+
+After training, convert a saved full model directory into official StereoPilot key format:
+
+```bash
+python tools/export_wan_stereo_full_model.py --input /path/to/workspace/runs/<fullft-run>/<run-id>/epoch1 --output /path/to/workspace/stereopilot_exports/StereoPilot_fullft.safetensors --reference /path/to/workspace/StereoPilot/ckpt/StereoPilot.safetensors --save-dtype reference
+```
+
+See `diffusion-pipe-stereo/docs/wan_stereo_fullft.md` for the FullFT-specific notes.
 
 ## Train Wan Stereo LoRA
 
